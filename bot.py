@@ -1,6 +1,7 @@
 import logging
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import Updater, CommandHandler, MessageHandler, Application, CallbackContext
+from telegram.ext.filters import DocumentFilter
 import requests
 import os
 
@@ -43,14 +44,12 @@ def handle_document(update: Update, context: CallbackContext) -> None:
         update.message.reply_text('An error occurred while processing the file.')
 
 def main() -> None:
-    updater = Updater(TELEGRAM_TOKEN)
-    dispatcher = updater.dispatcher
+    application = Application.builder().token(TELEGRAM_TOKEN).build()
 
-    dispatcher.add_handler(CommandHandler('start', start))
-    dispatcher.add_handler(MessageHandler(Filters.document, handle_document))
+    application.add_handler(CommandHandler('start', start))
+    application.add_handler(MessageHandler(DocumentFilter(), handle_document))
 
-    updater.start_polling()
-    updater.idle()
+    application.run_polling()
 
 if __name__ == '__main__':
     main()
