@@ -6,7 +6,7 @@ import requests
 import os
 
 # Replace with your actual Telegram bot token
-TELEGRAM_TOKEN = '7304879730:AAGYfEoYWKeUW9-bP3wQ6UNHhzRthkSUxU0'
+TELEGRAM_TOKEN = '6654200002:AAERzFaeTfabFLGvKLE6-kLnD99rjtSpH-Y'
 
 # Set up logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
