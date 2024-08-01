@@ -15,10 +15,33 @@ logger = logging.getLogger(__name__)
 
 async def start(update: Update, context: CallbackContext) -> None:
     await update.message.reply_text('Hi there, I am an uploader.')
-
 async def handle_document(update: Update, context: CallbackContext) -> None:
     file = update.message.document.get_file()
     file.download('temp_file')
+
+    # Replace with the correct Telegraph API URL
+    telegraph_upload_url = 'https://telegra.ph/upload' 
+
+    try:
+        with open('temp_file', 'rb') as f:
+            response = requests.post(telegraph_upload_url, files={'file': f})
+        
+        os.remove('temp_file')  # Clean up the temp file
+
+        if response.status_code == 200:
+            data = response.json()
+            # Inspect the response structure to ensure correct access
+            logger.info(f'Response data: {data}')
+            if 'src' in data[0]:
+                file_url = data[0]['src']
+                await update.message.reply_text(f'File uploaded to Telegraph: https://telegra.ph{file_url}')
+            else:
+                await update.message.reply_text(f'Failed to upload file. Response: {data}')
+        else:
+            await update.message.reply_text(f'Error uploading file. Status code: {response.status_code}')
+    except Exception as e:
+        logger.error(f'An error occurred: {e}')
+        await update.message.reply_text(f'An error occurred while processing the file: {e}')
 
     # Upload file to Telegraph
     try:
