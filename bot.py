@@ -4,7 +4,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 import requests
 import os
 
-# Replace these with your actual tokens
+# Replace with your actual Telegram bot token
 TELEGRAM_TOKEN = '7304879730:AAE71ZB-KQNB4_-yOTYTZbwLLKP78TjJFYg'
 
 # Set up logging
@@ -13,7 +13,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('Send me a file, and I will upload it to Telegraph.')
+    update.message.reply_text('Hi there, I am an uploader.')
 
 def handle_document(update: Update, context: CallbackContext) -> None:
     file = update.message.document.get_file()
@@ -33,7 +33,7 @@ def handle_document(update: Update, context: CallbackContext) -> None:
             data = response.json()
             if 'src' in data[0]:
                 file_url = data[0]['src']
-                update.message.reply_text(f'File uploaded to Telegraph: {file_url}')
+                update.message.reply_text(f'File uploaded to Telegraph: https://telegra.ph{file_url}')
             else:
                 update.message.reply_text('Failed to upload file.')
         else:
