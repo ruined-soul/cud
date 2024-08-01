@@ -1,6 +1,6 @@
 import logging
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Application, CallbackContext
+from telegram.ext import Application, CommandHandler, MessageHandler, CallbackContext
 from telegram.ext import filters
 import requests
 import os
@@ -13,10 +13,10 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('Hi there, I am an uploader.')
+async def start(update: Update, context: CallbackContext) -> None:
+    await update.message.reply_text('Hi there, I am an uploader.')
 
-def handle_document(update: Update, context: CallbackContext) -> None:
+async def handle_document(update: Update, context: CallbackContext) -> None:
     file = update.message.document.get_file()
     file.download('temp_file')
 
@@ -27,21 +27,21 @@ def handle_document(update: Update, context: CallbackContext) -> None:
                 'https://telegra.ph/upload',
                 files={'file': f}
             )
-            
+        
         os.remove('temp_file')  # Clean up the temp file
 
         if response.status_code == 200:
             data = response.json()
             if 'src' in data[0]:
                 file_url = data[0]['src']
-                update.message.reply_text(f'File uploaded to Telegraph: https://telegra.ph{file_url}')
+                await update.message.reply_text(f'File uploaded to Telegraph: https://telegra.ph{file_url}')
             else:
-                update.message.reply_text('Failed to upload file.')
+                await update.message.reply_text('Failed to upload file.')
         else:
-            update.message.reply_text('Error uploading file.')
+            await update.message.reply_text('Error uploading file.')
     except Exception as e:
         logger.error(f'An error occurred: {e}')
-        update.message.reply_text('An error occurred while processing the file.')
+        await update.message.reply_text('An error occurred while processing the file.')
 
 def main() -> None:
     application = Application.builder().token(TELEGRAM_TOKEN).build()
