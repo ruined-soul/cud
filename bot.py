@@ -1,7 +1,7 @@
 import logging
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Application, CallbackContext
-from telegram.ext.filters import DocumentFilter
+from telegram.ext import filters
 import requests
 import os
 
@@ -46,8 +46,9 @@ def handle_document(update: Update, context: CallbackContext) -> None:
 def main() -> None:
     application = Application.builder().token(TELEGRAM_TOKEN).build()
 
+    # Use filters.Document() to filter document messages
     application.add_handler(CommandHandler('start', start))
-    application.add_handler(MessageHandler(DocumentFilter(), handle_document))
+    application.add_handler(MessageHandler(filters.Document.ALL, handle_document))
 
     application.run_polling()
 
